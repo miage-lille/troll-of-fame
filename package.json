@@ -1,0 +1,48 @@
+{
+  "name": "troll-of-fame",
+  "version": "0.0.1",
+  "description": "New OCaml project",
+  "license": "MPL-2.0",
+  "scripts": { "start": "esy x tof", "test": "esy x test-tof" },
+  "dependencies": { "@opam/ppx_deriving": "4.5", "ocaml": "~4.10" },
+  "devDependencies": {
+    "@opam/alcotest": "1.2.3",
+    "@opam/qcheck-core": "0.16",
+    "@opam/qcheck-alcotest": "0.16",
+    "@pesy/esy-pesy": "0.1.0-alpha.11",
+    "@opam/dune": ">=2.7",
+    "@opam/ocamlformat": "*",
+    "@opam/ocaml-lsp-server": "ocaml/ocaml-lsp:ocaml-lsp-server.opam"
+  },
+  "esy": {
+    "build": "dune build -p #{self.name}",
+    "buildDev": "pesy build",
+    "release": { "releasedBinaries": [ "tof" ] }
+  },
+  "buildDirs": {
+    "lib": {
+      "namespace": "TOF", 
+      "name": "troll-of-fame.lib", 
+      "require": [],  
+      "preprocess": ["pps", "ppx_deriving.std", "ppx_deriving.enum", "ppx_deriving.show" ,"ppx_deriving.eq", "ppx_deriving.ord"] 
+    },
+    "bin": {
+      "main": "tof_app",
+      "bin": "tof_app.ml",
+      "name": "tof",
+      "require": [ "troll-of-fame.lib" ]
+    },
+    "test": {
+      "namespace": "SUT",
+      "name": "troll-of-fame.test",
+      "ocamloptFlags": [ "-linkall", "-g" ],
+      "require": [ "troll-of-fame.lib", "alcotest" , "qcheck-core", "qcheck-alcotest"]
+    },
+    "test-runner": {
+      "main": "test_tof",
+      "bin": "runner.ml",
+      "name": "test-tof",
+      "require": [ "troll-of-fame.test" ]
+    }
+  }
+}
