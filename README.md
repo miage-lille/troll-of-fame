@@ -101,6 +101,7 @@ In OCaml, we use `qcheck` library to write Property Based tests with `alcotest` 
 #### Step 1 - Configuration and Invariance
 
 ![invariant](./invariant.png)
+
 _No matter the year, the 31st of December is a New Year's Eve_
 
 - For a simpler start, we already configured the build dependencies and created generators for `Elf` and `Troll` in the test lib. The module `Generator.Fantasy` provides all the arbitraries you need. An arbitrary is used to generate values by the test runner:
@@ -178,6 +179,7 @@ let troll_invariance =
 Inverse properties check that it's possible to transform some input to an output and back to the original input, no matter the input. This is a useful property because it guarantees some functions don't lose information and/or are consistent.
 
 ![inverse](./inverse.png)
+
 _`bar` and `foo` are inverse of each other_
 
 - For any `Troll` and any `Elf`, if the `Troll` kills the `Elf` and then realizes the elf survived, what should be the result?
@@ -204,6 +206,7 @@ let troll_inverse =
 Analogous properties check that there are at least 2 different ways from any input to reach an output. This is a useful property because it guarantees some functions are consistent (can also be useful for refactors)
 
 ![analogy](./analogy1.png)
+
 _Adding any number to itself is the same as multiplying this number by 2_
 
 For any troll, any elf and any positive quantity of killed elves, what should be the difference between:
@@ -230,6 +233,7 @@ let troll_analogy =
 **Don't forget to add the test to the test set**
 
 ![analogy](./analogy2.png)
+
 _For refactors, copy the function to refactor, do your changes, then write an Analogy property test to check for any input that they return the same output, i.e. the refactor has no regression! Now you can delete the test and the legacy function, and rename the refactored function to the legacy name_
 
 #### Step 4 - Idempotence
@@ -237,6 +241,7 @@ _For refactors, copy the function to refactor, do your changes, then write an An
 Idempotent properties check that running a function once or several times leads to exactly the same result, i.e. an idempotent function brings to a stable state from which this function becomes useless.
 
 ![idempotence](./idempotence1.png)
+
 _Once a list of numbers is sorted, sorting it again doesn't change anything_
 
 > Exercice:
@@ -245,6 +250,7 @@ _Once a list of numbers is sorted, sorting it again doesn't change anything_
 > - Write an idempotent property test to check that
 
 ![idempotence](./idempotence2.png)
+
 _More generally, `function` is idempotent if applying it to its own result doesn't change anything_
 
 This ensures that `all_elves_of_a_kind_resurrected` brings the `Troll` killing list to a stable state (i.e. many call should have the same result as once).
