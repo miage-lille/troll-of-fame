@@ -227,7 +227,6 @@ let troll_analogy =
       i_got qty elf troll
       = ( List.init qty (fun _ -> 1)
         |> List.fold_left (fun cur_troll _ -> i_got_one elf cur_troll) troll ))
-    ```
 ````
 
 **Don't forget to add the test to the test set**
@@ -275,4 +274,4 @@ Injective properties check that different inputs lead to different outputs, i.e.
 > - For any `Troll` and any 2 elves elf1 and elf2, assuming elf1 is different from elf2, troll after killing elf1 must be different from `Troll` after killing elf2
 > - Write an injective property test to check that
 
-This ensures that iGotOne always updates the provided `Troll` in a unique way.
+This ensures that i_got_one always updates the provided `Troll` in a unique way.
