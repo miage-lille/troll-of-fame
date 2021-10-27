@@ -61,9 +61,11 @@ For this kata you should only know about [ppx-deriving](https://github.com/ocaml
 
 ## Getting started
 
-- Install esy : `npm install -g esy`
-- Install dependencies : `esy`
-- Work with your IDE (VSCode - recommended, VIM, Emacs ) : `esy x [MY_IDE]` ie `esy x code .`
+Setups of the last kata are working: [need to read again about setup](https://github.com/miage-lille/tennis-kata/blob/master/doc/00-setup.md)
+
+Clone the project, then you can:
+- Install dependencies : `esy install`
+- Build your project : `esy`
 - Run compiled executable : `esy start`
 - Run tests : `esy test`
 
@@ -81,6 +83,8 @@ This time it's decided, the elf hunting contest is launched!
 At the end of each battle, the trolls want to compare the number and attributes of the slain elves. And with **ToF** it should be easy ⋯ Should.
 
 ## Excercices
+
+This Kata will make you discover Property Based Testing. Along the kata, you will learn some kind of properties you may extract and test in a program. This may lead to catch new bugs in the program. Lucky you, that is our goal! Whenever you find a new bug, you have to fix it before going to the next step.
 
 ### Work with legacy code
 
@@ -139,7 +143,9 @@ let elf_prop_set =
 
 - Did you notice the property test takes a `Elf.t` as input? That's where PBT shines! The library will run this test 1000 times, and each time will pass a random Elf to it. We no longer care about building input data!
 
-- An exemple: since killing a High Elf double the score, any High Elf value must be an even number.
+- High Elves are the worst ! Trolls hate them so killing them double the hit score.
+
+Here we can extract a property of our application: since killing a High Elf double the score, any High Elf value must be an even number.
 
 ```OCaml
 ...
