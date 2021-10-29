@@ -1,8 +1,5 @@
-(* -*- tuareg -*- *)
-
-open Jbuild_plugin.V1
-
-let () =
-  run_and_read_lines ("pesy dune-file " ^ Sys.getcwd ())
-  |> String.concat "\n"
-  |> send
+(library
+ (name SUT)
+ (public_name troll-of-fame.test)
+ (libraries alcotest qcheck-core qcheck-alcotest troll-of-fame.lib)
+ (ocamlopt_flags -linkall -g))

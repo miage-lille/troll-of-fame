@@ -1,8 +1,10 @@
-(* -*- tuareg -*- *)
-
-open Jbuild_plugin.V1
-
-let () =
-  run_and_read_lines ("pesy dune-file " ^ Sys.getcwd ())
-  |> String.concat "\n"
-  |> send
+(library
+ (name TOF)
+ (public_name troll-of-fame.lib)
+ (preprocess
+  (pps
+   ppx_deriving.std
+   ppx_deriving.enum
+   ppx_deriving.show
+   ppx_deriving.eq
+   ppx_deriving.ord)))
