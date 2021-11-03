@@ -17,7 +17,8 @@
     "@opam/qcheck-alcotest": "0.16",
     "@opam/dune": ">=2.7",
     "@opam/ocamlformat": "*",
-    "@opam/ocaml-lsp-server": "*"
+    "@opam/ocaml-lsp-server": "*",
+    "@opam/ocamlformat-rpc-lib": "*"
   },
   "esy": {
     "build": "dune build -p #{self.name}",
