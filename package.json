@@ -12,9 +12,9 @@
     "ocaml": ">=4.12"
   },
   "devDependencies": {
-    "@opam/alcotest": "1.2.3",
-    "@opam/qcheck-core": "0.16",
-    "@opam/qcheck-alcotest": "0.16",
+    "@opam/alcotest": "1.5.0",
+    "@opam/qcheck-core": "0.18",
+    "@opam/qcheck-alcotest": "0.18",
     "@opam/dune": ">=2.7",
     "@opam/ocamlformat": "*",
     "@opam/ocaml-lsp-server": "*",
