@@ -82,7 +82,7 @@ This time it's decided, the elf hunting contest is launched!
 
 At the end of each battle, the trolls want to compare the number and attributes of the slain elves. And with **ToF** it should be easy ⋯ Should.
 
-## Excercices
+## Exercices
 
 This Kata will make you discover Property Based Testing. Along the kata, you will learn some kind of properties you may extract and test in a program. This may lead to catch new bugs in the program. Lucky you, that is our goal! Whenever you find a new bug, you have to fix it before going to the next step.
 
@@ -90,9 +90,13 @@ This Kata will make you discover Property Based Testing. Along the kata, you wil
 
 You inherit an application that seems to work fine. Run `esy test` (•̀ᴗ•́)و ̑̑
 
-Read [./test/elf_test.ml](./test/elf_test.ml) and [./test/troll_test.re](./test/troll_test.ml) as a first specification of the software.
+Read [./test/elf_test.ml](./test/elf_test.ml) and [./test/troll_test.ml](./test/troll_test.ml) as a first specification of the software.
 
-Now uncomment the content of [./test/elf_prop.ml](./test/elf_prop.ml) and run tests again `esy test` ⋯ Ooops seems that our unit tests was not so complete. (╥﹏╥)
+Now uncomment the content of [./test/elf_prop.ml](./test/elf_prop.ml) 
+
+> This means to uncomment `elf_invariance_2` and add it to the list of tests to run `troll_prop_set`
+
+and run tests again `esy test` ⋯ Ooops seems that our unit tests were not so complete. (╥﹏╥)
 
 We will try to improve the quality of _Troll of Frame_ thanks to Property Based Testing.
 
@@ -108,14 +112,14 @@ In OCaml, we use `qcheck` library to write Property Based tests with `alcotest` 
 
 _No matter the year, the 31st of December is a New Year's Eve_
 
-- For a simpler start, we already configured the build dependencies and created generators for `Elf` and `Troll` in the test lib. The module `Generator.Fantasy` provides all the arbitraries you need. An arbitrary is used to generate values by the test runner:
+- For a simpler start, we already configured the build dependencies and created generators for `Elf` and `Troll` in the test lib. The module `Generator.Fantasy` provides all the generators you need. A generator is a value of type `'a QCheck2.Gen.t` and is used to generate values of type `'a` by the test runner:
 
-  - `elf_arbitrary`: generate value of type `Elf.t`
-  - `elf_high_arbitrary`: generate value of type `Elf.t` with `race = Race.HighElf`
-  - `troll_arbitrary`: generate value of type `Troll.t`
-  - `troll_elf_arbitrary`: generate a tuple value of type `(Troll.t * Elf.t)`
-  - `troll_elf_int_arbitrary`: generate a triple value of type `(Troll.t * Elf.t * int)`
-  - `troll_two_elves_arbitrary`: generate a triple value of type `(Troll.t * Elf.t * Elf.t)`
+  - `elf_gen`: generate value of type `Elf.t`
+  - `elf_high_gen`: generate value of type `Elf.t` with `race = Race.HighElf`
+  - `troll_gen`: generate value of type `Troll.t`
+  - `troll_elf_gen`: generate a tuple value of type `(Troll.t * Elf.t)`
+  - `troll_elf_int_gen`: generate a triple value of type `(Troll.t * Elf.t * int)`
+  - `troll_two_elves_gen`: generate a triple value of type `(Troll.t * Elf.t * Elf.t)`
 
 - PBT tests are located in [./test/elf_prop.ml](./test/elf_prop.ml) and [./test/troll_prop.ml](./test/troll_prop.ml)
 
@@ -129,10 +133,10 @@ open TOF.Elf
 open Generator.Fantasy
 
 let elf_invariance_1 =
-  QCheck.Test.make
+  QCheck2.Test.make
     ~count:1000
     ~name:"Elf value should always be positive"
-    elf_arbitrary
+    elf_gen
     (fun elf -> value elf > 0)
 
 let elf_prop_set =
@@ -151,10 +155,10 @@ Here we can extract a property of our application: since killing a High Elf doub
 ...
 
 let elf_invariance_2 =
-  QCheck.Test.make
+  Qcheck2.Test.make
     ~count:1000
     ~name:"The value of a High elf must be an even number"
-    elf_high_arbitrary
+    elf_high_gen
     (fun elf -> value elf mod 2 = 0)
 
 let elf_prop_set =
@@ -169,10 +173,10 @@ That's the test which made you discover a bug when you uncommented it while our 
 
 ```OCaml
 let troll_invariance =
-  QCheck.Test.make
+  Qcheck2.Test.make
     ~count:1000
     ~name:"Troll score should always be >= 0"
-    troll_arbitrary
+    troll_gen
     (fun troll -> scoring troll >= 0)
 ```
 
@@ -197,10 +201,10 @@ So we can add a test that for any elf, i_got_one of this elf is the inverse of o
 
 ```OCaml
 let troll_inverse =
-  QCheck.Test.make
+  Qcheck2.Test.make
     ~count:1000
     ~name:"oops_he_survived should always be inverse of i_got_one"
-    troll_elf_arbitrary
+    troll_elf_gen
     (fun (troll, elf) ->
       i_got_one elf troll |> oops_he_survived elf |> scoring = scoring troll)
 ```
@@ -225,10 +229,10 @@ This ensures that `i_got_one` and `i_got` are consistent.
 
 ````Ocaml
 let troll_analogy =
-  QCheck.Test.make
+  Qcheck2.Test.make
     ~count:1000
     ~name:"i_got_one and i_got should be consistent"
-    troll_elf_int_arbitrary
+    troll_elf_int_gen
     (fun (troll, elf, qty) ->
       i_got qty elf troll
       = ( List.init qty (fun _ -> 1)

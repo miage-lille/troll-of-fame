@@ -1,18 +1,22 @@
-open QCheck.Gen
+open QCheck2.Gen
 open TOF
 
 module type MFantasy = sig
-  val elf_arbitrary : Elf.t QCheck.arbitrary
+  val elf_gen : Elf.t t
 
-  val elf_high_arbitrary : Elf.t QCheck.arbitrary
+  val elf_high_gen : Elf.t t
 
-  val troll_arbitrary : Troll.t QCheck.arbitrary
+  val elf_print : Elf.t -> string
 
-  val troll_elf_arbitrary : (Troll.t * Elf.t) QCheck.arbitrary
+  val troll_gen : Troll.t t
 
-  val troll_elf_int_arbitrary : (Troll.t * Elf.t * int) QCheck.arbitrary
+  val troll_elf_gen : (Troll.t * Elf.t) t
 
-  val troll_two_elves_arbitrary : (Troll.t * Elf.t * Elf.t) QCheck.arbitrary
+  val troll_elf_int_gen : (Troll.t * Elf.t * int) t
+
+  val troll_two_elves_gen : (Troll.t * Elf.t * Elf.t) t
+
+  val troll_print : Troll.t -> string
 end
 
 module Fantasy : MFantasy = struct
@@ -34,14 +38,10 @@ module Fantasy : MFantasy = struct
 
   let elf_print elf =
     Elf.show elf ^ " = " ^ (Elf.value elf |> string_of_int)
-    |> QCheck.Print.string
+    |> QCheck2.Print.string
 
 
-  let elf_arbitrary = QCheck.make ~print:elf_print elf_gen
-
-  let elf_high_arbitrary = QCheck.make ~print:elf_print elf_high_gen
-
-  let name_gen = string ~gen:QCheck.Gen.printable
+  let name_gen = string_printable
 
   let kill_gen =
     pair elf_gen nat
@@ -49,7 +49,7 @@ module Fantasy : MFantasy = struct
     let key, value = pair in
     Troll.ElvesMap.update
       key
-      (Troll.optional_add (Some value [@explicit_arity]))
+      (Troll.optional_add (Some value))
       Troll.ElvesMap.empty
 
 
@@ -60,7 +60,7 @@ module Fantasy : MFantasy = struct
         | Some xo, Some yo -> Some (xo + yo)
         | None, Some _ -> y
         | Some _, None -> x
-        | _ -> None)
+        | _ -> None )
       acc
       v
 
@@ -70,22 +70,17 @@ module Fantasy : MFantasy = struct
 
 
   let troll_gen =
-    pair name_gen (QCheck.Gen.list kill_gen)
+    pair name_gen (list kill_gen)
     >|= fun (name, kills) ->
     let open Troll in
     { name; kills = list_killed_to_map_killed kills }
 
 
-  let troll_print troll = Troll.show troll |> QCheck.Print.string
+  let troll_print troll = Troll.show troll |> QCheck2.Print.string
 
-  let troll_arbitrary = QCheck.make ~print:troll_print troll_gen
+  let troll_elf_gen = pair troll_gen elf_gen
 
-  let troll_elf_arbitrary = QCheck.pair troll_arbitrary elf_arbitrary
+  let troll_elf_int_gen = triple troll_gen elf_gen small_nat
 
-  let troll_elf_int_arbitrary =
-    QCheck.triple troll_arbitrary elf_arbitrary QCheck.small_nat
-
-
-  let troll_two_elves_arbitrary =
-    QCheck.triple troll_arbitrary elf_arbitrary elf_arbitrary
+  let troll_two_elves_gen = triple troll_gen elf_gen elf_gen
 end
