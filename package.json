@@ -18,7 +18,7 @@
     "@opam/dune": ">=2.7",
     "@opam/ocamlformat": "*",
     "@opam/ocaml-lsp-server": "*",
-    "@opam/ocamlformat-rpc-lib": "*"
+    "@opam/ocamlformat-rpc": "*"
   },
   "esy": {
     "build": "dune build -p #{self.name}",
